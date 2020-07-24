@@ -58,7 +58,9 @@ public class BeansDtdResolver implements EntityResolver {
 			logger.trace("Trying to resolve XML entity with public ID [" + publicId +
 					"] and system ID [" + systemId + "]");
 		}
-
+		// 以下是两行样例
+		// publicld: -//Spring/JOTO BEAN 2.0//EN
+		// systemld: http://www.springframework.org/dtd/Spring-beans-2.0.dtd
 		if (systemId != null && systemId.endsWith(DTD_EXTENSION)) {
 			int lastPathSeparator = systemId.lastIndexOf('/');
 			int dtdNameStart = systemId.indexOf(DTD_NAME, lastPathSeparator);
@@ -68,6 +70,7 @@ public class BeansDtdResolver implements EntityResolver {
 					logger.trace("Trying to locate [" + dtdFile + "] in Spring jar on classpath");
 				}
 				try {
+					// 从类路径加载DTD验证资源
 					Resource resource = new ClassPathResource(dtdFile, getClass());
 					InputSource source = new InputSource(resource.getInputStream());
 					source.setPublicId(publicId);

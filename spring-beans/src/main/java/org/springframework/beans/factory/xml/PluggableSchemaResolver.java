@@ -112,6 +112,9 @@ public class PluggableSchemaResolver implements EntityResolver {
 					"] and system id [" + systemId + "]");
 		}
 
+		// 以下两行是样例
+		// publicld: null
+		//systemld: http://www.spring企amework.org/schema/beans/S pring-beans.xsd
 		if (systemId != null) {
 			String resourceLocation = getSchemaMappings().get(systemId);
 			if (resourceLocation == null && systemId.startsWith("https:")) {
@@ -119,6 +122,7 @@ public class PluggableSchemaResolver implements EntityResolver {
 				resourceLocation = getSchemaMappings().get("http:" + systemId.substring(6));
 			}
 			if (resourceLocation != null) {
+				// 从类路径加载XSD验证资源
 				Resource resource = new ClassPathResource(resourceLocation, this.classLoader);
 				try {
 					InputSource source = new InputSource(resource.getInputStream());

@@ -256,6 +256,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * Return the EntityResolver to use, building a default resolver
 	 * if none specified.
 	 */
+	// 返回的EntityResolver实例将设置到DocumentBuider对象中
 	protected EntityResolver getEntityResolver() {
 		if (this.entityResolver == null) {
 			// Determine default EntityResolver to use.
@@ -264,6 +265,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 				this.entityResolver = new ResourceEntityResolver(resourceLoader);
 			}
 			else {
+				// 设置详解委托解析器
+				// DTD解析器
 				this.entityResolver = new DelegatingEntityResolver(getBeanClassLoader());
 			}
 		}
@@ -301,6 +304,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+		// 新建编码对象资源，当前并没有设置设置字符集
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
@@ -317,25 +321,34 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			logger.info("Loading XML bean definitions from " + encodedResource);
 		}
 
+		// 利用线程本地变量缓存encodedResource
 		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 		if (currentResources == null) {
+			// 设置单线程资源容量为4
 			currentResources = new HashSet<>(4);
+			// 设置到线程本地变量里
 			this.resourcesCurrentlyBeingLoaded.set(currentResources);
 		}
+		// 添加encodedResource到线程本地变量缓存池中
 		if (!currentResources.add(encodedResource)) {
 			throw new BeanDefinitionStoreException(
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
 		try {
+			// 获取资inputStream
 			InputStream inputStream = encodedResource.getResource().getInputStream();
 			try {
+				// 创建inputSource，全路径org.xml.sax.InputSource
 				InputSource inputSource = new InputSource(inputStream);
 				if (encodedResource.getEncoding() != null) {
+					// 设置inputSource字符集
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
+				// 加载beanDefinitions，这一步比较核心
 				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 			}
 			finally {
+				// 关闭流，释放资源
 				inputStream.close();
 			}
 		}
@@ -344,7 +357,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"IOException parsing XML document from " + encodedResource.getResource(), ex);
 		}
 		finally {
+			// 根据资源加载完成beanDefinitions后，删除缓存的encodedResource
 			currentResources.remove(encodedResource);
+			// 当没有资源时，移除线程本地变量 resourcesCurrentlyBeingLoaded
 			if (currentResources.isEmpty()) {
 				this.resourcesCurrentlyBeingLoaded.remove();
 			}
@@ -388,6 +403,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 			throws BeanDefinitionStoreException {
 		try {
+			// 读取xml转为Document对象
 			Document doc = doLoadDocument(inputSource, resource);
 			return registerBeanDefinitions(doc, resource);
 		}
@@ -426,8 +442,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see DocumentLoader#loadDocument
 	 */
 	protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
-		return this.documentLoader.loadDocument(inputSource, getEntityResolver(), this.errorHandler,
-				getValidationModeForResource(resource), isNamespaceAware());
+		return this.documentLoader.loadDocument(
+				inputSource,
+				getEntityResolver(),
+				this.errorHandler,
+				getValidationModeForResource(resource), // 获取资源的验证模式,DTD或者XSD模式
+				isNamespaceAware());
 	}
 
 	/**
@@ -438,11 +458,14 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * mode, even when something other than {@link #VALIDATION_AUTO} was set.
 	 * @see #detectValidationMode
 	 */
+	// 获取xml的验证模式，验证模式有两种，分别是DTD和XSD。
 	protected int getValidationModeForResource(Resource resource) {
+		// 如果手动指定了验证模式则使用指定的验证模式
 		int validationModeToUse = getValidationMode();
 		if (validationModeToUse != VALIDATION_AUTO) {
 			return validationModeToUse;
 		}
+		// 如果未指定则使用自动检测
 		int detectedMode = detectValidationMode(resource);
 		if (detectedMode != VALIDATION_AUTO) {
 			return detectedMode;
@@ -503,9 +526,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		// 使用 DefaultBeanDefinitionDocumentReader 实例化 BeanDefinitionDocumentReader
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		// 统计当前 BeanDefinition 个数
 		int countBefore = getRegistry().getBeanDefinitionCount();
+		// 加载及注册 bean
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		// 记录本次加载的 BeanDefinition 个数
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 

@@ -93,6 +93,7 @@ public class DefaultDocumentLoader implements DocumentLoader {
 
 		if (validationMode != XmlValidationModeDetector.VALIDATION_NONE) {
 			factory.setValidating(true);
+			// 根据验证模式，设置启用XSD命令空间
 			if (validationMode == XmlValidationModeDetector.VALIDATION_XSD) {
 				// Enforce namespace aware for XSD...
 				factory.setNamespaceAware(true);
