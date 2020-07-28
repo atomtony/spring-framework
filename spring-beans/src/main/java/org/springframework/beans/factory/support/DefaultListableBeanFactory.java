@@ -789,6 +789,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		if (beanDefinition instanceof AbstractBeanDefinition) {
 			try {
+				/**
+				 * 注册前的最后一次校验，这里的校验不同与 XML 文件校验
+				 * 主要是对于 AbstractBeanDefinition 属性中的 methodOverrides 校验
+				 * 校验 methodOverrides 是否与工厂方法并存或者 methodOverrides 对应的方法根本不存在
+				 */
 				((AbstractBeanDefinition) beanDefinition).validate();
 			}
 			catch (BeanDefinitionValidationException ex) {
@@ -798,7 +803,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
+		// 处理已经注册的 beanName 情况
 		if (existingDefinition != null) {
+			// 如果对应的 beanName 已经注册且配置中配置了 bean 不允许被覆盖，则抛出异常
 			if (!isAllowBeanDefinitionOverriding()) {
 				throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
 						"Cannot register bean definition [" + beanDefinition + "] for bean '" + beanName +
@@ -831,13 +838,16 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		else {
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
+				// 因为 beanDefinitionMap 是全局变量， 这里定会存在并发访问的情况
 				synchronized (this.beanDefinitionMap) {
 					this.beanDefinitionMap.put(beanName, beanDefinition);
+					// 更新全局 beanDefinitionNames
 					List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionNames.size() + 1);
 					updatedDefinitions.addAll(this.beanDefinitionNames);
 					updatedDefinitions.add(beanName);
 					this.beanDefinitionNames = updatedDefinitions;
 					if (this.manualSingletonNames.contains(beanName)) {
+						// 从手动单列名称列表中移除移除当前 beanName
 						Set<String> updatedSingletons = new LinkedHashSet<>(this.manualSingletonNames);
 						updatedSingletons.remove(beanName);
 						this.manualSingletonNames = updatedSingletons;
@@ -846,8 +856,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			else {
 				// Still in startup registration phase
+				// 将 BeanDefinition 放到这个 map 中，这个 map 保存了所有的 BeanDefinition
 				this.beanDefinitionMap.put(beanName, beanDefinition);
+				// 这个是 ArrayList ，所以会按照 bean 配置的书讯保存每一个注册的 Bean 的名称
 				this.beanDefinitionNames.add(beanName);
+				// 这个是 LinkedHashSet 存放类手动注册的 beanName
+				// 手动注册方法 registerSingleton(String beanName, Object singletonObject)
 				this.manualSingletonNames.remove(beanName);
 			}
 			this.frozenBeanDefinitionNames = null;

@@ -175,11 +175,13 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				Node node = nl.item(i);
 				if (node instanceof Element) {
 					Element ele = (Element) node;
+					// 查看标签命名空间是否为默认的
 					if (delegate.isDefaultNamespace(ele)) {
-						//
+						// 对 bean 的处理
 						parseDefaultElement(ele, delegate);
 					}
 					else {
+						// 对自定义 bean 的处理
 						delegate.parseCustomElement(ele);
 					}
 				}
@@ -222,6 +224,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		// Resolve system properties: e.g. "${user.dir}"
+		// 解析系统属性
 		location = getReaderContext().getEnvironment().resolveRequiredPlaceholders(location);
 
 		Set<Resource> actualResources = new LinkedHashSet<>(4);
@@ -283,7 +286,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * Process the given alias element, registering the alias with the registry.
 	 */
 	protected void processAliasRegistration(Element ele) {
+		// 获取 beanName
 		String name = ele.getAttribute(NAME_ATTRIBUTE);
+		// 获取 alias
 		String alias = ele.getAttribute(ALIAS_ATTRIBUTE);
 		boolean valid = true;
 		if (!StringUtils.hasText(name)) {
@@ -296,12 +301,14 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 		if (valid) {
 			try {
+				// 注册 alias
 				getReaderContext().getRegistry().registerAlias(name, alias);
 			}
 			catch (Exception ex) {
 				getReaderContext().error("Failed to register alias '" + alias +
 						"' for bean with name '" + name + "'", ele, ex);
 			}
+			// 别名注册后通知监听器做相应处理
 			getReaderContext().fireAliasRegistered(name, alias, extractSource(ele));
 		}
 	}
