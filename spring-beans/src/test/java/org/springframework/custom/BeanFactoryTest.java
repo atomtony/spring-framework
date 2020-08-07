@@ -14,7 +14,7 @@ public class BeanFactoryTest {
 
 		MyTestBean bean= (MyTestBean) bf.getBean("myTestBean");
 
-		System.out.printf(bean.getTestStr());
+		System.out.println(bean.getTestStr());
 
 
 	}

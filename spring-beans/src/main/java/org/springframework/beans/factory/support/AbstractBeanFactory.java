@@ -239,7 +239,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
-		// 根据 alias 获取 beanName
+		// 如果是&开头，则从下标1开始截取，去除掉&
+		// 根据 alias 获取 beanName，
 		final String beanName = transformedBeanName(name);
 		Object bean;
 
@@ -327,6 +328,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// 实例化依赖的 bean 后便可以实例化 mdb 本身了
 				// singleton 模式的创建
 				if (mbd.isSingleton()) {
+					// 获取单里，从ObjectFactory中创建
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							return createBean(beanName, mbd, args);
@@ -1726,11 +1728,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// Register a DisposableBean implementation that performs all destruction
 				// work for the given bean: DestructionAwareBeanPostProcessors,
 				// DisposableBean interface, custom destroy method.
+				// 单例模式下需要销毁的bean，此方法会处理实现DisposableBean的bean
+				// 并且对所有bean使用DestructionAwareBeanPostProcessors处理DisposableBean
 				registerDisposableBean(beanName,
 						new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
 			}
 			else {
 				// A bean with a custom scope...
+				// 自定义 scope 的处理
 				Scope scope = this.scopes.get(mbd.getScope());
 				if (scope == null) {
 					throw new IllegalStateException("No Scope registered for scope name '" + mbd.getScope() + "'");

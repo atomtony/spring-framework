@@ -184,7 +184,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				// 如果 bean "正在加载" 则不处理
 				singletonObject = this.earlySingletonObjects.get(beanName);
 				if (singletonObject == null && allowEarlyReference) {
-					// 当某写方法需要提前初始化的时候会调用 addSingletonFactory 方法将对应的
+					// 当某些方法需要提前初始化的时候会调用 addSingletonFactory 方法将对应的
 					// ObjectFactory 初始化策略存储在 singletonFactories
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
@@ -192,6 +192,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 						singletonObject = singletonFactory.getObject();
 						// 记录在缓存中 earlySingletonObjects 和 singletonFactories 互斥
 						this.earlySingletonObjects.put(beanName, singletonObject);
+						// 移除创建此单例的ObjectFactory
 						this.singletonFactories.remove(beanName);
 					}
 				}
@@ -224,7 +225,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				if (logger.isDebugEnabled()) {
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
 				}
-				// 3. 加载单例前记录加载状态
+				// 创建单例前置处理
 				beforeSingletonCreation(beanName);
 				boolean newSingleton = false;
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
@@ -256,9 +257,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+					// 单例后置处理
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					// 添加单例到singletonObjects
 					addSingleton(beanName, singletonObject);
 				}
 			}

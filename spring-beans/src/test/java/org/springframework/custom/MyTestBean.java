@@ -4,6 +4,7 @@ public class MyTestBean {
 
 	private String testStr = "testStr";
 
+
 	public String getTestStr() {
 		return testStr;
 	}
