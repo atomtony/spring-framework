@@ -2,20 +2,23 @@ package org.springframework.emp;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
-import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
+import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.LifecycleProcessor;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
+
 public class FullyBeanPostProcessor implements BeanPostProcessor,
 		InstantiationAwareBeanPostProcessor,
 		SmartInstantiationAwareBeanPostProcessor,
 		MergedBeanDefinitionPostProcessor,
-		DestructionAwareBeanPostProcessor {
+		DestructionAwareBeanPostProcessor,
+		BeanFactoryPostProcessor,
+		ApplicationListener, LifecycleProcessor {
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
 		if (beanClass == Emp.class) {
@@ -88,5 +91,42 @@ public class FullyBeanPostProcessor implements BeanPostProcessor,
 	@Override
 	public Object getEarlyBeanReference(Object bean, String beanName) throws BeansException {
 		return bean;
+	}
+
+	@Override
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		System.out.println("调用了自定义的BeanFactoryPostProcessor " + beanFactory);
+	}
+
+	@Override
+	public void onApplicationEvent(ApplicationEvent event) {
+		System.out.println("onApplicationEvent " + event);
+
+	}
+
+	@Override
+	public void onRefresh() {
+		System.out.println("LifecycleProcessor.onRefresh");
+	}
+
+	@Override
+	public void onClose() {
+		System.out.println("LifecycleProcessor.onClose");
+	}
+
+	@Override
+	public void start() {
+		System.out.println("LifecycleProcessor.start");
+	}
+
+	@Override
+	public void stop() {
+		System.out.println("LifecycleProcessor.onRefresh");
+	}
+
+	@Override
+	public boolean isRunning() {
+		System.out.println("LifecycleProcessor.isRunning");
+		return false;
 	}
 }

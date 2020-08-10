@@ -4,14 +4,26 @@
 	   xmlns:context="http://www.springframework.org/schema/context"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
-	<bean class="org.springframework.emp.FullyBeanPostProcessor"/>
 	<bean id="department" class="org.springframework.emp.Department"/>
 
-	<bean id="role" class="org.springframework.emp.Role"/>
+	<bean id="role" class="org.springframework.emp.Role" lazy-init="true"/>
 
 	<bean id="emp" class="org.springframework.emp.Emp"
 		  init-method="initTest"
 		  destroy-method="destoryTest"
 		  autowire="byType"/>
+	<bean class="org.springframework.emp.FullyBeanPostProcessor"/>
+
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="test.messages"/>
+	</bean>
+
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean class="org.springframework.emp.String2DateConverter"/>
+			</list>
+		</property>
+	</bean>
 
 </beans>
