@@ -29,12 +29,14 @@ public class EmpTest2 {
 
 		context.publishEvent(new TestEvent("aaa"));
 
+		// 类型转化
 		DefaultConversionService conversionService = new DefaultConversionService();
 		conversionService.addConverter(new String2DateConverter());
 		Date date = conversionService.convert("1988-04-23 11:11::11", Date.class);
-
 		System.out.println(date.toLocaleString());
 
+		// 切面测试
+		beanEmp.test();
 	}
 
 	static class TestEvent extends ApplicationEvent {

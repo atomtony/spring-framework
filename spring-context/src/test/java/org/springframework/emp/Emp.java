@@ -44,4 +44,8 @@ public class Emp implements BeanFactoryAware, InitializingBean, DisposableBean {
 	public void destroy() throws Exception {
 		System.out.println("DisposableBean destroy");
 	}
+
+	public void test(){
+		System.out.println("test");
+	}
 }
