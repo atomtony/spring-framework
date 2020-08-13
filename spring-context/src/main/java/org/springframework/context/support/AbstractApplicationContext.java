@@ -554,7 +554,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				onRefresh();
 
 				// Check for listener beans and register them.
-				// 在所欲偶注册bean中查找 Listener bean,注册到消息广播器中
+				// 在所有注册bean中查找 ApplicationListener 的 bean, 注册到消息广播器中
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
@@ -644,7 +644,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
-		// 初始化BeanFacotry，并进行xml文件读取，并将读取到BeanFactory记录在当前实体的属性中。
+		// 初始化 BeanFacotry，并进行xml文件读取，并将读取到BeanFactory记录在当前实体的属性中。
+		// 调用 AbstractRefreshableApplicationContext.refreshBeanFactory();方法
 		refreshBeanFactory();
 		// 返回当前实体的BeanFactory属性
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
