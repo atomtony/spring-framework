@@ -14,9 +14,10 @@ public class EmpTest3 {
 
 	@Test
 	public void testSimpleLoad() {
-		ApplicationContext context = new ClassPathXmlApplicationContext("emp2.xml");
-		Emp beanEmp = (Emp) context.getBean("emp");
+		ApplicationContext context = new ClassPathXmlApplicationContext("emp3.xml");
+		People beanEmp = (People) context.getBean("emp3");
 		beanEmp.test();
+
 	}
 
 

@@ -8,7 +8,7 @@ public class AspectJTest {
 
 	@Pointcut("execution(* *.test(..))")
 	public void test() {
-
+		System.out.println("AspectJTest.test");
 	}
 
 	@Before("test()")

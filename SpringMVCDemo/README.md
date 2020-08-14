@@ -31,7 +31,9 @@ cp ./spring-webmvc/build/libs/spring-webmvc-5.0.18.BUILD-SNAPSHOT.jar SpringMVCD
 拷贝classes目录
 
 ```
-cp -r SpringMVCDemo/build/classes/ SpringMVCDemo/out1/WEB-INF/
+cp -r SpringMVCDemo/build/classes/java/main/* SpringMVCDemo/out1/WEB-INF/classes
+
+cp -r SpringMVCDemo/build/classes/java/main/* SpringMVCDemo/out1/WEB-INF/
 ```
 
 

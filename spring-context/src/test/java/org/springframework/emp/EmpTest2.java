@@ -27,8 +27,6 @@ public class EmpTest2 {
 		System.out.println(context.getMessage("test", null, Locale.US));
 		System.out.println(context.getMessage("test", null, Locale.SIMPLIFIED_CHINESE));
 
-		context.publishEvent(new TestEvent("aaa"));
-
 		// 类型转化
 		DefaultConversionService conversionService = new DefaultConversionService();
 		conversionService.addConverter(new String2DateConverter());
@@ -39,15 +37,4 @@ public class EmpTest2 {
 		beanEmp.test();
 	}
 
-	static class TestEvent extends ApplicationEvent {
-
-
-		public TestEvent(Object source) {
-			super(source);
-		}
-
-		public void print() {
-			System.out.println(source);
-		}
-	}
 }

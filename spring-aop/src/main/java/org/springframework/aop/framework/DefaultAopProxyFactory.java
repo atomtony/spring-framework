@@ -48,6 +48,9 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 
 	@Override
 	public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {
+		// 1 是否控制tonguingCGLIB 创建的代理是否使用激进的优化策略。
+		// 2. proxyTargetClass 属性 为true是，需要在 <aop:aspectj-autoproxy proxy-target-class="true"/> 设置
+		// 3. 是否存在代理接口
 		if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
 			Class<?> targetClass = config.getTargetClass();
 			if (targetClass == null) {

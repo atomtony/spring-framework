@@ -5,8 +5,8 @@
 	   xmlns:aop="http://www.springframework.org/schema/aop"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
-	<aop:aspectj-autoproxy/>
-	<bean id="emp" class="org.springframework.emp.Emp"/>
+	<aop:aspectj-autoproxy />
+	<bean id="emp3" class="org.springframework.emp.Emp3"/>
 	<bean class="org.springframework.emp.AspectJTest"/>
 
 </beans>
