@@ -33,7 +33,6 @@ cp ./spring-webmvc/build/libs/spring-webmvc-5.0.18.BUILD-SNAPSHOT.jar SpringMVCD
 ```
 cp -r SpringMVCDemo/build/classes/java/main/* SpringMVCDemo/out1/WEB-INF/classes
 
-cp -r SpringMVCDemo/build/classes/java/main/* SpringMVCDemo/out1/WEB-INF/
 ```
 
 

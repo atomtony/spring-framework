@@ -9,5 +9,7 @@
             </props>
         </property>
     </bean>
-    <bean id="userController" class="com.jht.UserController"/>
+    <bean id="userController" class="com.jht.UserController" lazy-init="true"/>
+	<bean id="exceptionResolver" class="com.jht.MyHandlerExceptionResolver"/>
+
 </beans>

@@ -466,11 +466,13 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	protected View createView(String viewName, Locale locale) throws Exception {
 		// If this resolver is not supposed to handle the given view,
 		// return null to pass on to the next resolver in the chain.
+		// 如果当前解析器不支持，当前解析器如 viewName 为空的情况
 		if (!canHandle(viewName, locale)) {
 			return null;
 		}
 
 		// Check for special "redirect:" prefix.
+		// 处理前缀为 redirect:xxx 的情况
 		if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
 			String redirectUrl = viewName.substring(REDIRECT_URL_PREFIX.length());
 			RedirectView view = new RedirectView(redirectUrl,
@@ -483,6 +485,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 		}
 
 		// Check for special "forward:" prefix.
+		// 处理前缀为 forward:xxx 的情况
 		if (viewName.startsWith(FORWARD_URL_PREFIX)) {
 			String forwardUrl = viewName.substring(FORWARD_URL_PREFIX.length());
 			return new InternalResourceView(forwardUrl);
@@ -548,10 +551,12 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 		Assert.state(viewClass != null, "No view class");
 
 		AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(viewClass);
+		// 添加前缀以及后缀
 		view.setUrl(getPrefix() + viewName + getSuffix());
 
 		String contentType = getContentType();
 		if (contentType != null) {
+			// 设置 ContentType
 			view.setContentType(contentType);
 		}
 

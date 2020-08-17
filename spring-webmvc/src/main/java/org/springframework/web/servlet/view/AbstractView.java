@@ -322,6 +322,8 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	protected Map<String, Object> createMergedOutputModel(@Nullable Map<String, ?> model,
 			HttpServletRequest request, HttpServletResponse response) {
 
+		// 合并 staticAttributes、pathVariables和model中的属性值，最后放到 mergedModel 返回
+
 		@SuppressWarnings("unchecked")
 		Map<String, Object> pathVars = (this.exposePathVariables ?
 				(Map<String, Object>) request.getAttribute(View.PATH_VARIABLES) : null);
