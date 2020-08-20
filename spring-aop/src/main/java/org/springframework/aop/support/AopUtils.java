@@ -222,6 +222,7 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
+		// 这是会将 pointcutExpression 设置到 pc中
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}

@@ -11,17 +11,8 @@ public class CarTest {
 
 	@Test
 	public void testSimpleLoad() throws Exception {
-//		{
-//			DefaultListableBeanFactory bf = new XmlBeanFactory(new ClassPathResource("carl.xml"));
-//			CarFactoryBean bean= (CarFactoryBean) bf.getBean("&mycar");
-//			System.out.printf(bean.getObject().toString());
-//		}
-		{
-			DefaultListableBeanFactory bf = new XmlBeanFactory(new ClassPathResource("carl.xml"));
-			Car bean= (Car) bf.getBean("mycar");
-			System.out.printf(bean.toString());
-		}
-
-
+		DefaultListableBeanFactory bf = new XmlBeanFactory(new ClassPathResource("car.xml"));
+		Car bean= (Car) bf.getBean("mycar");
+		System.out.printf(bean.toString());
 	}
 }

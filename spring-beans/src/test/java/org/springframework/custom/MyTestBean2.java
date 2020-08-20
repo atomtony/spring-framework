@@ -1,12 +1,8 @@
 package org.springframework.custom;
 
-public class MyTestBean {
+public class MyTestBean2 {
 
 	private String testStr = "testStr";
-
-	public MyTestBean(String testStr) {
-		this.testStr = testStr;
-	}
 
 	public String getTestStr() {
 		return testStr;
@@ -15,6 +11,4 @@ public class MyTestBean {
 	public void setTestStr(String testStr) {
 		this.testStr = testStr;
 	}
-
-
 }

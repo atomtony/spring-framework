@@ -124,9 +124,12 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					return null;
 				});
 			}
+			// 没有需要动态改变的方法，则使用反射创建实例
 			return (args != null ? BeanUtils.instantiateClass(ctor, args) : BeanUtils.instantiateClass(ctor));
 		}
 		else {
+			// 有需要覆盖或者动态替换的方法，则使用cglib进行动态代理
+			// 可以在创建代理的同时将动态方法植入类中
 			return instantiateWithMethodInjection(bd, beanName, owner, ctor, args);
 		}
 	}
