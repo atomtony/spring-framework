@@ -367,12 +367,17 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 	public <T> T execute(StatementCallback<T> action) throws DataAccessException {
 		Assert.notNull(action, "Callback object must not be null");
 
+		// 获取数据库链接
 		Connection con = DataSourceUtils.getConnection(obtainDataSource());
 		Statement stmt = null;
 		try {
+			// 创建 Statement
 			stmt = con.createStatement();
+			// 应用用户设定的输入参数
 			applyStatementSettings(stmt);
+			// 执行查询语句和将查询结果 ResultSet 映射为 POJO 对象
 			T result = action.doInStatement(stmt);
+			// 处理警告
 			handleWarnings(stmt);
 			return result;
 		}
@@ -380,8 +385,10 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 			// Release Connection early, to avoid potential connection pool deadlock
 			// in the case when the exception translator hasn't been initialized yet.
 			String sql = getSql(action);
+			// 关闭 Statement
 			JdbcUtils.closeStatement(stmt);
 			stmt = null;
+			// 关闭链接
 			DataSourceUtils.releaseConnection(con, getDataSource());
 			con = null;
 			throw translateException("StatementCallback", sql, ex);
@@ -429,10 +436,13 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 			public T doInStatement(Statement stmt) throws SQLException {
 				ResultSet rs = null;
 				try {
+					// 进行查询
 					rs = stmt.executeQuery(sql);
+					// 将 ResultSet 映射为 POJO 对象
 					return rse.extractData(rs);
 				}
 				finally {
+					// 关闭 ResultSet
 					JdbcUtils.closeResultSet(rs);
 				}
 			}
@@ -596,18 +606,23 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 			logger.debug("Executing prepared SQL statement" + (sql != null ? " [" + sql + "]" : ""));
 		}
 
+		// 获取数据库链接
 		Connection con = DataSourceUtils.getConnection(obtainDataSource());
 		PreparedStatement ps = null;
 		try {
 			ps = psc.createPreparedStatement(con);
+			// 应用用户设定的输入参数,主要设置 fetchSize和maxRows两个参数
 			applyStatementSettings(ps);
+			// 设置 PreparedStatement 所需的全部参数
 			T result = action.doInPreparedStatement(ps);
+			// 警告处理
 			handleWarnings(ps);
 			return result;
 		}
 		catch (SQLException ex) {
 			// Release Connection early, to avoid potential connection pool deadlock
 			// in the case when the exception translator hasn't been initialized yet.
+			// 释放数据库连接,避免当异常转换器没有被初始化的时候出现潜在的连接池死锁
 			if (psc instanceof ParameterDisposer) {
 				((ParameterDisposer) psc).cleanupParameters();
 			}
@@ -615,6 +630,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 			psc = null;
 			JdbcUtils.closeStatement(ps);
 			ps = null;
+			// 释放连接
 			DataSourceUtils.releaseConnection(con, getDataSource());
 			con = null;
 			throw translateException("PreparedStatementCallback", sql, ex);
@@ -849,8 +865,10 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 		return updateCount(execute(psc, ps -> {
 			try {
 				if (pss != null) {
+					// 设置 PreparedStatement 所需的全部参数
 					pss.setValues(ps);
 				}
+				// PreparedStatement 执行更新操作,然后更新的行数
 				int rows = ps.executeUpdate();
 				if (logger.isDebugEnabled()) {
 					logger.debug("SQL update affected " + rows + " rows");
@@ -1357,8 +1375,10 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 	 * @see org.springframework.jdbc.SQLWarningException
 	 */
 	protected void handleWarnings(Statement stmt) throws SQLException {
+		// 当设置了忽略警告时,只尝试打印日志
 		if (isIgnoreWarnings()) {
 			if (logger.isDebugEnabled()) {
+				// 如果日志开启的情况下,打印日志
 				SQLWarning warningToLog = stmt.getWarnings();
 				while (warningToLog != null) {
 					logger.debug("SQLWarning ignored: SQL state '" + warningToLog.getSQLState() + "', error code '" +

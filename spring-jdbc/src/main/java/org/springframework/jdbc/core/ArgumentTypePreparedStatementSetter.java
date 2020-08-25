@@ -60,7 +60,9 @@ public class ArgumentTypePreparedStatementSetter implements PreparedStatementSet
 		int parameterPosition = 1;
 		if (this.args != null && this.argTypes != null) {
 			for (int i = 0; i < this.args.length; i++) {
+				// 遍历每个参数以作类型匹配及转换
 				Object arg = this.args[i];
+				// 如果集合类型则需要进行结合类和内部递归解析集合内部属性
 				if (arg instanceof Collection && this.argTypes[i] != Types.ARRAY) {
 					Collection<?> entries = (Collection<?>) arg;
 					for (Object entry : entries) {
@@ -78,6 +80,7 @@ public class ArgumentTypePreparedStatementSetter implements PreparedStatementSet
 					}
 				}
 				else {
+					// 解析当前属性
 					doSetValue(ps, parameterPosition, this.argTypes[i], arg);
 					parameterPosition++;
 				}
