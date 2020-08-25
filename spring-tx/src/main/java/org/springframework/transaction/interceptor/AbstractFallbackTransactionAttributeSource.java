@@ -159,12 +159,14 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 
 		// First try is the method in the target class.
+		// 查看方法中是否存在事务声明
 		TransactionAttribute txAttr = findTransactionAttribute(specificMethod);
 		if (txAttr != null) {
 			return txAttr;
 		}
 
 		// Second try is the transaction attribute on the target class.
+		// 查看方法所在的类中是否存在事务声明
 		txAttr = findTransactionAttribute(specificMethod.getDeclaringClass());
 		if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 			return txAttr;

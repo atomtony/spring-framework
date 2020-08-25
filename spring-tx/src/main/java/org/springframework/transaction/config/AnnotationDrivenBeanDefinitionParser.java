@@ -110,6 +110,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				Object eleSource = parserContext.extractSource(element);
 
 				// Create the TransactionAttributeSource definition.
+				// 创建 TransactionAttributeSource 的 bean
 				RootBeanDefinition sourceDef = new RootBeanDefinition(
 						"org.springframework.transaction.annotation.AnnotationTransactionAttributeSource");
 				sourceDef.setSource(eleSource);
@@ -117,6 +118,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				String sourceName = parserContext.getReaderContext().registerWithGeneratedName(sourceDef);
 
 				// Create the TransactionInterceptor definition.
+				// 创建 TransactionInterceptor 的 bean
 				RootBeanDefinition interceptorDef = new RootBeanDefinition(TransactionInterceptor.class);
 				interceptorDef.setSource(eleSource);
 				interceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
@@ -125,16 +127,22 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);
 
 				// Create the TransactionAttributeSourceAdvisor definition.
+				// 创建 BeanFactoryTransactionAttributeSourceAdvisor 的 bean
 				RootBeanDefinition advisorDef = new RootBeanDefinition(BeanFactoryTransactionAttributeSourceAdvisor.class);
 				advisorDef.setSource(eleSource);
 				advisorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+				// 将 sourceName 对应的 bean 注入到 advisorDef 的 transactionAttributeSource 属性中
 				advisorDef.getPropertyValues().add("transactionAttributeSource", new RuntimeBeanReference(sourceName));
+				// 将 interceptorName 对应的 bean 注入到 advisorDef 的 adviceBeanName 属性中
 				advisorDef.getPropertyValues().add("adviceBeanName", interceptorName);
 				if (element.hasAttribute("order")) {
 					advisorDef.getPropertyValues().add("order", element.getAttribute("order"));
 				}
+				// 事物增强器 beanName 是 "org.springframework.transaction.config.internalTransactionAdvisor"
+				// 由于 BeanFactoryTransactionAttributeSourceAdvisor 实现了 Advisor 接口,后续可以通过接口获取到实例
 				parserContext.getRegistry().registerBeanDefinition(txAdvisorBeanName, advisorDef);
 
+				// 创建爱呢 CompositeComponentDefinition
 				CompositeComponentDefinition compositeDef = new CompositeComponentDefinition(element.getTagName(), eleSource);
 				compositeDef.addNestedComponent(new BeanComponentDefinition(sourceDef, sourceName));
 				compositeDef.addNestedComponent(new BeanComponentDefinition(interceptorDef, interceptorName));

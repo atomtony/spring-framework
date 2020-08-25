@@ -290,6 +290,7 @@ public abstract class AopUtils {
 		}
 		else if (advisor instanceof PointcutAdvisor) {
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
+			// 获取切点
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
 		else {
