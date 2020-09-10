@@ -280,6 +280,8 @@ public class DispatcherServlet extends FrameworkServlet {
 		// This is currently strictly internal and not meant to be customized
 		// by application developers.
 		try {
+			// 此文件目录在resources/org/springframework/web/servlet/DispatcherServlet.properties
+			// 读取 DispatcherServlet.properties 文件，这个里边定义了些默认bean的实现类
 			ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, DispatcherServlet.class);
 			defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
 		}
@@ -934,6 +936,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
+			// 分发任务，进一步处理
 			doDispatch(request, response);
 		}
 		finally {
@@ -1141,7 +1144,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @see MultipartResolver#resolveMultipart
 	 */
 	protected HttpServletRequest checkMultipart(HttpServletRequest request) throws MultipartException {
-		// 判断是否为 MultipartContent 类型的request
+		// 判断是否为 MultipartContent 类型的request，通过检查 ContentType 类型是否为 multipart/
 		if (this.multipartResolver != null && this.multipartResolver.isMultipart(request)) {
 			if (WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class) != null) {
 				logger.debug("Request is already a MultipartHttpServletRequest - if not in a forward, " +

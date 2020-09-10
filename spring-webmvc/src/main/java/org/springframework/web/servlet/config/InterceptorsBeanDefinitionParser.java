@@ -52,6 +52,7 @@ class InterceptorsBeanDefinitionParser implements BeanDefinitionParser {
 			pathMatcherRef = new RuntimeBeanReference(element.getAttribute("path-matcher"));
 		}
 
+		//查询mvc:interceptors节点下的bean、ref、interceptor标签
 		List<Element> interceptors = DomUtils.getChildElementsByTagName(element, "bean", "ref", "interceptor");
 		for (Element interceptor : interceptors) {
 			RootBeanDefinition mappedInterceptorDef = new RootBeanDefinition(MappedInterceptor.class);
@@ -68,8 +69,10 @@ class InterceptorsBeanDefinitionParser implements BeanDefinitionParser {
 				interceptorBean = context.getDelegate().parsePropertySubElement(beanElem, null);
 			}
 			else {
+				//解析bean标签、ref标签，并封装成beanDefinition
 				interceptorBean = context.getDelegate().parsePropertySubElement(interceptor, null);
 			}
+			// MappedInterceptor类的构造函数可接受三个参数
 			mappedInterceptorDef.getConstructorArgumentValues().addIndexedArgumentValue(0, includePatterns);
 			mappedInterceptorDef.getConstructorArgumentValues().addIndexedArgumentValue(1, excludePatterns);
 			mappedInterceptorDef.getConstructorArgumentValues().addIndexedArgumentValue(2, interceptorBean);
@@ -78,6 +81,7 @@ class InterceptorsBeanDefinitionParser implements BeanDefinitionParser {
 				mappedInterceptorDef.getPropertyValues().add("pathMatcher", pathMatcherRef);
 			}
 
+			//保存到spring的bean工厂中
 			String beanName = context.getReaderContext().registerWithGeneratedName(mappedInterceptorDef);
 			context.registerComponent(new BeanComponentDefinition(mappedInterceptorDef, beanName));
 		}

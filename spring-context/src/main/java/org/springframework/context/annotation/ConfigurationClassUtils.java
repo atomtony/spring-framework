@@ -109,10 +109,13 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
+		// 如果存在Configuration注解，
 		if (isFullConfigurationCandidate(metadata)) {
+			// 设置属性 configurationClass = "full"
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
 		else if (isLiteConfigurationCandidate(metadata)) {
+			// 设置属性 configurationClass = "lite"
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
 		else {

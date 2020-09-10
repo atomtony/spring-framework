@@ -150,6 +150,7 @@ public abstract class TransactionSynchronizationManager {
 	 */
 	@Nullable
 	private static Object doGetResource(Object actualKey) {
+		// 其中 resources 是线程本地变量,缓存的是map对象
 		Map<Object, Object> map = resources.get();
 		if (map == null) {
 			return null;

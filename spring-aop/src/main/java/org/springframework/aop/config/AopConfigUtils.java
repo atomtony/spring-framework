@@ -125,9 +125,12 @@ public abstract class AopConfigUtils {
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
+				// 查看已经注册代理创建器优先级
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
+				// 查看参数代理创建器优先级
 				int requiredPriority = findPriorityForClass(cls);
 				if (currentPriority < requiredPriority) {
+					// 设置优先级高的代理创建器
 					apcDefinition.setBeanClassName(cls.getName());
 				}
 			}
@@ -135,6 +138,7 @@ public abstract class AopConfigUtils {
 			return null;
 		}
 
+		// 创建代理创建器 beanDefinition , 需要进行实例化
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);

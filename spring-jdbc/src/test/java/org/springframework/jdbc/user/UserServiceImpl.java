@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
 				new int[]{Types.VARCHAR, Types.INTEGER, Types.VARCHAR});
 
 		//事务测试, 加上这句代码y!IJ 数据不会保存到数据库中
-		throw new RuntimeException("aa");
+//		throw new RuntimeException("aa");
 	}
 
 	@Override

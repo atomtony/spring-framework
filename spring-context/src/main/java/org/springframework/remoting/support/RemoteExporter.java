@@ -148,7 +148,9 @@ public abstract class RemoteExporter extends RemotingSupport {
 	 * @see RemoteInvocationTraceInterceptor
 	 */
 	protected Object getProxyForService() {
+		// 验证 service
 		checkService();
+		// 验证 serviceInterface
 		checkServiceInterface();
 
 		ProxyFactory proxyFactory = new ProxyFactory();

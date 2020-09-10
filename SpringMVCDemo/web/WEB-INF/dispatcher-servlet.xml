@@ -10,7 +10,7 @@
 	   http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 	<context:component-scan base-package="com.jht"/>
-	<mvc:annotation-driven/>
+<!--	<mvc:annotation-driven/>-->
 
 	<bean id="simpleUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
@@ -19,7 +19,11 @@
             </props>
         </property>
     </bean>
-    <bean id="userController" class="com.jht.UserController" lazy-init="true"/>
+	<mvc:interceptors>
+		<bean class="com.jht.MyTestInterceptor"/>
+	</mvc:interceptors>
+
+	<bean id="userController" class="com.jht.UserController" lazy-init="true"/>
 	<bean id="exceptionResolver" class="com.jht.MyHandlerExceptionResolver"/>
 
 </beans>

@@ -96,6 +96,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 
 		// First, see if we have a cached value.
 		Object cacheKey = getCacheKey(method, targetClass);
+		// 查看缓存
 		TransactionAttribute cached = this.attributeCache.get(cacheKey);
 		if (cached != null) {
 			// Value will either be canonical value indicating there is no transaction attribute,
@@ -104,14 +105,17 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 				return null;
 			}
 			else {
+				// 返回已经缓存事物
 				return cached;
 			}
 		}
 		else {
 			// We need to work it out.
+			// 获取方法或者方法所在类存在事务,存在返回事务的属性
 			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
 			// Put it in the cache.
 			if (txAttr == null) {
+				// 缓存并标记为空事物
 				this.attributeCache.put(cacheKey, NULL_TRANSACTION_ATTRIBUTE);
 			}
 			else {

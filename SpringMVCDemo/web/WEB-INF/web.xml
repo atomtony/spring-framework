@@ -18,8 +18,8 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
 		<init-param>
-			<param-name>aa</param-name>
-			<param-value>bb</param-value>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
 		</init-param>
 	</servlet>
     <servlet-mapping>

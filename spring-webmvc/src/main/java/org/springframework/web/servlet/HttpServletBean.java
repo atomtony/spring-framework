@@ -154,14 +154,25 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
 		if (!pvs.isEmpty()) {
 			try {
-				// 将当前的这个 servlet 类转化为一个 BeanWrapper ，从而能够以Spring的方式来对 init-param的值进行注入
+				// 将当前的这个 servlet 类转化为一个 BeanWrapper ，从而能够以Spring的方式来对 init-param 的值进行注入
 				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
 				ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
 				// 注册自定义属性编辑器，一旦遇到Resource类型的属性将会使用ResourceEditor进行解析
 				bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
 				// 空实现，留给子类覆盖
 				initBeanWrapper(bw);
+
+				//    <servlet>
+				//        <servlet-name>dispatcher</servlet-name>
+				//        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+				//        <load-on-startup>1</load-on-startup>
+				//		<init-param>
+				//			<param-name>contextConfigLocation</param-name>
+				//			<param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
+				//		</init-param>
+				//	</servlet>
 				// 属性注入
+				// 例如以上配置，它会在DispatcherServlet中寻找contextConfigLocation字段，并注入/WEB-INF/dispatcher-servlet.xml的值
 				bw.setPropertyValues(pvs, true);
 			}
 			catch (BeansException ex) {
@@ -173,6 +184,10 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		}
 
 		// Let subclasses do whatever initialization they like.
+		// 此方法十分重要，他加载并实例化配置文件中的bean
+		// 如果web.xml中的DispatcherServlet中配置了contextConfigLocation参数，那么在读取参数后自动注入到DispatcherServlet中
+		// 如果web.xml中的DispatcherServlet中未配置contextConfigLocation参数，那么会默认读取一个 /WEB-INF/dispatcher-servlet.xml 文件
+		// 然后做bean在调用前的工作
 		initServletBean();
 
 		if (logger.isDebugEnabled()) {

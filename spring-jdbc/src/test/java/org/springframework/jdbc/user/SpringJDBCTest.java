@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SpringJDBCTest {
 	@Test
-	public void testSimpleLoad() throws Exception {
+	public void tetJdbc() throws Exception {
 		ApplicationContext context = new ClassPathXmlApplicationContext("user.xml");
 		UserService userService = (UserService) context.getBean("userService");
 

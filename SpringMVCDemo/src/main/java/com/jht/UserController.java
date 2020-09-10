@@ -12,8 +12,8 @@ public class UserController extends AbstractController  {
 
 	protected ModelAndView handleRequestInternal(javax.servlet.http.HttpServletRequest httpServletRequest, javax.servlet.http.HttpServletResponse httpServletResponse) throws Exception {
 
-		throw new Exception("Test aa");
-//		return new ModelAndView("userlist", "user", Arrays.asList("12"));
+//		throw new Exception("Test aa");
+		return new ModelAndView("userlist", "user", Arrays.asList("12"));
 	}
 
 
