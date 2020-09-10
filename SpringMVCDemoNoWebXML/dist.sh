@@ -22,4 +22,3 @@ cp -r ${PROJECT_ROOT}/${MODEL_NAME}/build/classes/java/main/* ${DISTRIBUTION_ROO
 
 # 拷贝资源文件
 cp -r ${PROJECT_ROOT}/${MODEL_NAME}/build/resources/main/* ${DISTRIBUTION_ROOT}/WEB-INF/classes
-

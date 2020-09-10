@@ -139,9 +139,11 @@ class ConfigurationClassBeanDefinitionReader {
 			registerBeanDefinitionForImportedConfigurationClass(configClass);
 		}
 		for (BeanMethod beanMethod : configClass.getBeanMethods()) {
+			// 从beanMethod加载beanDef
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
+		// 从@ImportResource配置的资源文件中加载beanDef
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
@@ -186,14 +188,18 @@ class ConfigurationClassBeanDefinitionReader {
 			return;
 		}
 
+		// 获取Bean注解的属性
 		AnnotationAttributes bean = AnnotationConfigUtils.attributesFor(metadata, Bean.class);
 		Assert.state(bean != null, "No @Bean annotation attributes");
 
 		// Consider name and any aliases
+		// 获取注解属性name
 		List<String> names = new ArrayList<>(Arrays.asList(bean.getStringArray("name")));
+		//属性name不为空，则取第一个别名为beanName，否则方法名称为beanName
 		String beanName = (!names.isEmpty() ? names.remove(0) : methodName);
 
 		// Register aliases even when overridden
+		// 注册别名
 		for (String alias : names) {
 			this.registry.registerAlias(beanName, alias);
 		}
@@ -213,11 +219,13 @@ class ConfigurationClassBeanDefinitionReader {
 
 		if (metadata.isStatic()) {
 			// static @Bean method
+			// @Bean注解了静态方法
 			beanDef.setBeanClassName(configClass.getMetadata().getClassName());
 			beanDef.setFactoryMethodName(methodName);
 		}
 		else {
 			// instance @Bean method
+			// @Bean注解了实例方法
 			beanDef.setFactoryBeanName(configClass.getBeanName());
 			beanDef.setUniqueFactoryMethodName(methodName);
 		}
@@ -226,16 +234,19 @@ class ConfigurationClassBeanDefinitionReader {
 
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(beanDef, metadata);
 
+		// 获取bean注解autowire属性
 		Autowire autowire = bean.getEnum("autowire");
 		if (autowire.isAutowire()) {
 			beanDef.setAutowireMode(autowire.value());
 		}
 
+		// 获取bean注解initMethod属性
 		String initMethodName = bean.getString("initMethod");
 		if (StringUtils.hasText(initMethodName)) {
 			beanDef.setInitMethodName(initMethodName);
 		}
 
+		// 获取bean注解destroyMethod属性
 		String destroyMethodName = bean.getString("destroyMethod");
 		beanDef.setDestroyMethodName(destroyMethodName);
 

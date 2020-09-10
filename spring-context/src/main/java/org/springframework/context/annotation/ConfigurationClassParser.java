@@ -163,12 +163,12 @@ class ConfigurationClassParser {
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
 		this.deferredImportSelectors = new LinkedList<>();
 
+		// 遍历配置beanDef
 		for (BeanDefinitionHolder holder : configCandidates) {
-			// 遍历 Configuration beanDefinition
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
-				// 解析注解Bean
 				if (bd instanceof AnnotatedBeanDefinition) {
+					// 解析注解beanDef
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
 				else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
@@ -269,6 +269,7 @@ class ConfigurationClassParser {
 			throws IOException {
 
 		// Recursively process any member (nested) classes first
+		// 首先递归处理成员类
 		processMemberClasses(configClass, sourceClass);
 
 		// Process any @PropertySource annotations
@@ -285,7 +286,7 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @ComponentScan annotations
-		// 处理@ComponentScan注解
+		// 处理@ComponentScan注解属性
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
 		if (!componentScans.isEmpty() &&
@@ -293,7 +294,7 @@ class ConfigurationClassParser {
 			// 遍历 @ComponentScan 注解集合
 			for (AnnotationAttributes componentScan : componentScans) {
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
-				// 扫描bean
+				// 扫描 @ComponentScan 属性 basePackages 配置包路径下的 组件
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
 				// Check the set of scanned definitions for any further config classes and parse recursively if needed
@@ -332,7 +333,7 @@ class ConfigurationClassParser {
 		}
 
 		// Process individual @Bean methods
-		// 解析 @Bean 注解的方法
+		// 处理@Bean注解的方法，返回MethodMetadata，后续根据 MethodMetadata 生成beanDef
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
@@ -408,6 +409,7 @@ class ConfigurationClassParser {
 	 */
 	private Set<MethodMetadata> retrieveBeanMethodMetadata(SourceClass sourceClass) {
 		AnnotationMetadata original = sourceClass.getMetadata();
+		// 返回@Bean注解的方法
 		Set<MethodMetadata> beanMethods = original.getAnnotatedMethods(Bean.class.getName());
 		if (beanMethods.size() > 1 && original instanceof StandardAnnotationMetadata) {
 			// Try reading the class file via ASM for deterministic declaration order...

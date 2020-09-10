@@ -213,6 +213,7 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 				logger.info("Registering annotated classes: [" +
 						StringUtils.collectionToCommaDelimitedString(this.annotatedClasses) + "]");
 			}
+			// 将初始化的配置类转化为 BeanDefinition 注册到注册容器中
 			reader.register(ClassUtils.toClassArray(this.annotatedClasses));
 		}
 

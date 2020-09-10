@@ -427,7 +427,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				if (resource.isReadable()) {
 					try {
 						MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
+						// 1. 经过排除滤器 excludeFilters
+						// 2. 经过包含过滤 includeFilters，并且不是被 @Conditional 注解
 						if (isCandidateComponent(metadataReader)) {
+							// 创建 beanDef，这个是被扫描获取到的
 							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 							sbd.setSource(resource);
 							if (isCandidateComponent(sbd)) {
@@ -493,6 +496,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		}
 		for (TypeFilter tf : this.includeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
+				// 判断是否被 @Conditional 注解
 				return isConditionMatch(metadataReader);
 			}
 		}
