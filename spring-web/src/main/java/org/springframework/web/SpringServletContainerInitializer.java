@@ -144,7 +144,6 @@ public class SpringServletContainerInitializer implements ServletContainerInitia
 
 		// webAppInitializerClasses集合中存放的是
 		// 通过 @HandlesTypes(WebApplicationInitializer.class) 注解扫描到的类集合
-
 		List<WebApplicationInitializer> initializers = new LinkedList<>();
 
 		if (webAppInitializerClasses != null) {

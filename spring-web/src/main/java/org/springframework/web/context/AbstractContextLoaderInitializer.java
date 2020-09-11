@@ -60,7 +60,7 @@ public abstract class AbstractContextLoaderInitializer implements WebApplication
 		WebApplicationContext rootAppContext = createRootApplicationContext();
 		if (rootAppContext != null) {
 			// 加载监听器，这个十分重要，后调用 contextInitialized 方法，进程bean加载和实例化
-			// 以下这部分工作，代码实现了web.xml中配置 ContextLoaderListener 监听器的加载工程
+			// 以下这部分代码实现了web.xml中配置 ContextLoaderListener 监听器的加载过程
 			ContextLoaderListener listener = new ContextLoaderListener(rootAppContext);
 			listener.setContextInitializers(getRootApplicationContextInitializers());
 			servletContext.addListener(listener);

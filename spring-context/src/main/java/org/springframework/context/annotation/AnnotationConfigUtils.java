@@ -159,6 +159,8 @@ public class AnnotationConfigUtils {
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
+			// 实现了 BeanDefinitionRegistryPostProcessor -> BeanFactoryPostProcessor 接口
+			// 其中 BeanDefinitionRegistryPostProcessor 负责处理被注解的配置
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
 			def.setSource(source);
 			// 注册处理 @Configuration 配置类处理器

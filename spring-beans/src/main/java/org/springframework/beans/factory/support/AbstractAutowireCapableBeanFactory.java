@@ -1793,7 +1793,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 			else {
-				// 调用  afterPropertiesSet 方法
+				// 调用  afterPropertiesSet 方法，
 				((InitializingBean) bean).afterPropertiesSet();
 			}
 		}

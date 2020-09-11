@@ -215,7 +215,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 						logger.debug("Could not resolve target class for bean with name '" + beanName + "'", ex);
 					}
 				}
+				// 判断bean是否被 Controller.class 或者 RequestMapping.class 注解
 				if (beanType != null && isHandler(beanType)) {
+					// 从bean中查找
 					detectHandlerMethods(beanName);
 				}
 			}
@@ -233,7 +235,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				obtainApplicationContext().getType((String) handler) : handler.getClass());
 
 		if (handlerType != null) {
+			// 返回Controller类
 			Class<?> userType = ClassUtils.getUserClass(handlerType);
+			// 存储Method和RequestMappingInfo，请求映射信息保存了请求路径和请求方法GET/POST还是其他
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<T>) method -> {
 						try {
@@ -249,6 +253,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			}
 			methods.forEach((method, mapping) -> {
 				Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
+				//注册Method和RequestMappingInfo，方便web请求从RequestMappingInfo查找到Method
 				registerHandlerMethod(handler, invocableMethod, mapping);
 			});
 		}
@@ -542,7 +547,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		public void register(T mapping, Object handler, Method method) {
 			this.readWriteLock.writeLock().lock();
 			try {
+				// handlerMethod 保存了请求反射调用的方法和反射方法对应的bean名称
+				// 最后会通过反射调用：method.invoke(beanInstance,args)
 				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
+				// mapping是RequestMappingInfo实例，请求映射信息保存了请求路径和请求方法GET/POST还是其他
 				assertUniqueMethodMapping(handlerMethod, mapping);
 				this.mappingLookup.put(mapping, handlerMethod);
 

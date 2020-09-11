@@ -135,6 +135,7 @@ class ConfigurationClassBeanDefinitionReader {
 			return;
 		}
 
+		// 从@Imported加载beanDef
 		if (configClass.isImported()) {
 			registerBeanDefinitionForImportedConfigurationClass(configClass);
 		}
@@ -195,7 +196,7 @@ class ConfigurationClassBeanDefinitionReader {
 		// Consider name and any aliases
 		// 获取注解属性name
 		List<String> names = new ArrayList<>(Arrays.asList(bean.getStringArray("name")));
-		//属性name不为空，则取第一个别名为beanName，否则方法名称为beanName
+		// 属性name不为空，则取第一个别名为beanName，否则方法名称为beanName
 		String beanName = (!names.isEmpty() ? names.remove(0) : methodName);
 
 		// Register aliases even when overridden

@@ -192,9 +192,12 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 	 */
 	@Override
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) {
+		// 注解读取器，同时也注册了许多处理注解的处理器
 		AnnotatedBeanDefinitionReader reader = getAnnotatedBeanDefinitionReader(beanFactory);
+		// 用来处理被注解的类，转化为beanDef
 		ClassPathBeanDefinitionScanner scanner = getClassPathBeanDefinitionScanner(beanFactory);
 
+		// bean名称生成器
 		BeanNameGenerator beanNameGenerator = getBeanNameGenerator();
 		if (beanNameGenerator != null) {
 			reader.setBeanNameGenerator(beanNameGenerator);

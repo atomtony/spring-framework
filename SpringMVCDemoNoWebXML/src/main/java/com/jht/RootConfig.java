@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 		excludeFilters = {@Filter(type = FilterType.ANNOTATION, value = EnableWebMvc.class)}
 )
 @ImportResource(locations = {"classpath:spring-person.xml"})
+@Import(value = {Man.class})
 public class RootConfig {
 
 	@Bean()
