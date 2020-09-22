@@ -2,7 +2,7 @@ package org.springframework.emp;
 
 public interface People {
 
-	void test();
+	void test(String name);
 
 	void getName();
 }

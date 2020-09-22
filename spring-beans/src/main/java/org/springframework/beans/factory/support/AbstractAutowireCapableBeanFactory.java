@@ -1718,17 +1718,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
-			// 对特殊的 bean 处理：Aware、BeanNameAware、BeanClassLoaderAware、BeanFactoryAware
+			// bean的生命周期 ：调用 BeanNameAware 的 setBeanName 方法
+			// bean的生命周期 ：调用 BeanFactoryAware 的 setBeanFactory 方法
 			invokeAwareMethods(beanName, bean);
 		}
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
-			// 应用后处理
+			//bean的生命周期：调用 BeanPostProcessors 的初始化方法
+			//bean的生命周期：调用 ApplicationContextAware 的 setApplicationContext 方法
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
+			//bean的生命周期：调用 InitializingBean 的 afterPropertiesSet 方法，
+			//bean的生命周期：调用自定义初始化方法
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1737,6 +1741,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
+			//bean的生命周期：调用BeanPostProcessors的预初始化后方法
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
@@ -1793,7 +1798,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 			else {
-				// 调用  afterPropertiesSet 方法，
+				// 调用 InitializingBean 的 afterPropertiesSet 方法，
 				((InitializingBean) bean).afterPropertiesSet();
 			}
 		}

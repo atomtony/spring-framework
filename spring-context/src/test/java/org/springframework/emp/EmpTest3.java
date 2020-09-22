@@ -16,7 +16,7 @@ public class EmpTest3 {
 	public void testSimpleLoad() {
 		ApplicationContext context = new ClassPathXmlApplicationContext("emp3.xml");
 		People beanEmp = (People) context.getBean("emp3");
-		beanEmp.test();
+		beanEmp.test("jihaitao");
 
 	}
 

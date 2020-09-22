@@ -18,7 +18,7 @@ public class Emp3  implements People{
 	}
 
 
-	public void test(){
+	public void test(String name){
 		System.out.println("test");
 	}
 
